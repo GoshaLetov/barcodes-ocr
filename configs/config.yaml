@@ -15,6 +15,7 @@ model_kwargs:
   rnn_hidden_size: 64
   rnn_dropout: 0.1
   rnn_bidirectional: true
+  rnn_num_layers: 2
   num_classes: 11
 
 optimizer: 'torch.optim.AdamW'

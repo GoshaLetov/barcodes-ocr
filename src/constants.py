@@ -1,8 +1,7 @@
 import os
+from pathlib import Path
 
-PROJECT_PATH = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
-
-EXPERIMENTS_PATH = os.path.join(PROJECT_PATH, 'experiments')
-
+PROJECT_PATH = Path(__file__).parent.parent
+CONFIGS_PATH = PROJECT_PATH / 'configs'
+EXPERIMENTS_PATH = PROJECT_PATH / 'experiments'
 DATA_PATH = os.environ.get('DATA_PATH')
-CONFIGS_PATH = os.path.join(PROJECT_PATH, 'configs')

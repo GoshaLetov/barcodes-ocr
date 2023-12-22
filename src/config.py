@@ -4,6 +4,18 @@ from omegaconf import OmegaConf
 from pydantic import BaseModel
 
 
+class ModelConfig(BaseModel):
+    backbone_name: str = 'resnet18'
+    pretrained: bool = True
+    cnn_output_size: int = 128
+    rnn_features_num: int = 48
+    rnn_hidden_size: int = 64
+    rnn_dropout: float = 0.1
+    rnn_bidirectional: bool = True
+    rnn_num_layers: int = 2
+    num_classes: int = 11
+
+
 class LossConfig(BaseModel):
     name: str
     weight: float
@@ -31,7 +43,7 @@ class Config(BaseModel):
     device: int
     monitor_metric: str
     monitor_mode: str
-    model_kwargs: dict
+    model_kwargs: ModelConfig
     optimizer: str
     optimizer_kwargs: dict
     scheduler: str

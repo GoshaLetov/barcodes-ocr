@@ -1,6 +1,7 @@
 from torch import nn
 import torch
 from timm import create_model
+from src.config import ModelConfig
 
 
 class CRNN(nn.Module):
@@ -10,43 +11,35 @@ class CRNN(nn.Module):
 
     def __init__(
         self,
-        backbone_name: str = 'resnet18',
-        pretrained: bool = True,
-        cnn_output_size: int = 128,
-        rnn_features_num: int = 48,
-        rnn_hidden_size: int = 64,
-        rnn_dropout: float = 0.1,
-        rnn_bidirectional: bool = True,
-        rnn_num_layers: int = 2,
-        num_classes: int = 11,
+        model_kwargs: ModelConfig,
     ) -> None:
         super().__init__()
 
         # Предобученный бекбон для фичей. Можно обрезать, не обязательно использовать всю глубину.
         self.backbone = create_model(
-            backbone_name,
-            pretrained=pretrained,
+            model_kwargs.backbone_name,
+            pretrained=model_kwargs.pretrained,
             features_only=True,
             out_indices=(2,),
         )
 
-        self.gate = nn.Conv2d(cnn_output_size, rnn_features_num, kernel_size=1, bias=False)
+        self.gate = nn.Conv2d(model_kwargs.cnn_output_size, model_kwargs.rnn_features_num, kernel_size=1, bias=False)
 
         # Рекуррентная часть.
         self.rnn = nn.GRU(
             input_size=576,
-            hidden_size=rnn_hidden_size,
-            dropout=rnn_dropout,
-            bidirectional=rnn_bidirectional,
-            num_layers=rnn_num_layers,
+            hidden_size=model_kwargs.rnn_hidden_size,
+            dropout=model_kwargs.rnn_dropout,
+            bidirectional=model_kwargs.rnn_bidirectional,
+            num_layers=model_kwargs.rnn_num_layers,
         )
 
-        classifier_in_features = rnn_hidden_size
-        if rnn_bidirectional:
-            classifier_in_features = 2 * rnn_hidden_size
+        classifier_in_features = model_kwargs.rnn_hidden_size
+        if model_kwargs.rnn_bidirectional:
+            classifier_in_features = 2 * model_kwargs.rnn_hidden_size
 
         # Классификатор.
-        self.fc = nn.Linear(classifier_in_features, num_classes)
+        self.fc = nn.Linear(classifier_in_features, model_kwargs.num_classes)
         self.softmax = nn.LogSoftmax(dim=2)
 
     def forward(self, tensor: torch.Tensor) -> torch.Tensor:

@@ -13,7 +13,7 @@ class OCRModule(pl.LightningModule):
         super().__init__()
         self._config = config
 
-        self._model = CRNN(**self._config.model_kwargs)
+        self._model = CRNN(model_kwargs=self._config.model_kwargs)
 
         self._losses = get_losses(self._config.losses)
 

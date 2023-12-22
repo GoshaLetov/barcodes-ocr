@@ -26,5 +26,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     config = Config.from_yaml(os.path.join(CONFIGS_PATH, 'config.yaml'))
     torch_to_onnx(config=config, checkpoint=args.checkpoint, onnx=args.onnx)
-# /home/16-ocr/lightning_logs/exp1/version_1/checkpoints/epoch=29-step=3000.ckpt
-# /home/16-ocr/experiments/exp1/ocr.onnx

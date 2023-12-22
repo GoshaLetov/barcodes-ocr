@@ -92,3 +92,5 @@ dvc pull path/to/model.onnx.dvc
 
 Перед тем как запускать обучение, необходимо подобрать входной размер изображения и бекбон для CRNN.
 Для этого можно использовать [ноутбук](notebooks/подбор параметров.ipynb).
+
+3. Логи текущей версии модели - [resnet50](https://app.clear.ml/projects/28e8534a1a4c437b8ba3249ac3905019/experiments/ef68434b58194ca4b248fbe00bb772ca/output/execution)

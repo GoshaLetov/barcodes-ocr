@@ -1,5 +1,7 @@
 import os
-from typing import Union, Optional
+from typing import Union, Optional, Tuple
+
+import numpy as np
 import pandas as pd
 
 import albumentations as albu
@@ -21,21 +23,21 @@ class BarCodeDataset(Dataset):
 
         self.crops = []
         self.codes = []
-        for i in range(len(df)):
-            image = cv2.imread(os.path.join(data_folder, df['filename'][i]))[..., ::-1]
-            x1 = int(df['x_from'][i])
-            y1 = int(df['y_from'][i])
-            x2 = int(df['x_from'][i]) + int(df['width'][i])
-            y2 = int(df['y_from'][i]) + int(df['height'][i])
+        for index, row in df.iterrows():
+            image = cv2.imread(os.path.join(data_folder, row['filename']))[..., ::-1]
+            x1 = int(row['x_from'])
+            y1 = int(row['y_from'])
+            x2 = int(row['x_from']) + int(row['width'])
+            y2 = int(row['y_from']) + int(row['height'])
             crop = image[y1:y2, x1:x2]
 
             if crop.shape[0] > crop.shape[1]:
                 crop = cv2.rotate(crop, 2)
 
             self.crops.append(crop)
-            self.codes.append(str(df['code'][i]))
+            self.codes.append(str(row['code']))
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: int) -> Tuple[np.ndarray, str, int]:
         text = self.codes[idx]
         image = self.crops[idx]
 
@@ -50,5 +52,5 @@ class BarCodeDataset(Dataset):
 
         return data['image'], data['text'], data['text_length']
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.crops)
